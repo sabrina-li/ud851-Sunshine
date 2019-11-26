@@ -15,11 +15,16 @@
  */
 package com.example.android.sunshine.utilities;
 
+import android.net.Uri;
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 /**
  * These utilities will be used to communicate with the weather servers.
@@ -66,7 +71,16 @@ public final class NetworkUtils {
      */
     public static URL buildUrl(String locationQuery) {
         // TODO (1) Fix this method to return the URL used to query Open Weather Map's API
-        return null;
+        Uri uri = Uri.parse(STATIC_WEATHER_URL).buildUpon()
+                .appendQueryParameter(QUERY_PARAM,locationQuery)
+                .build();
+        URL url = null;
+        try {
+            url = new URL(uri.toString());
+        }catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
     }
 
     /**
@@ -90,6 +104,7 @@ public final class NetworkUtils {
      * @throws IOException Related to network and stream reading
      */
     public static String getResponseFromHttpUrl(URL url) throws IOException {
+        Log.d("NetWorkUtils",url.toString());
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
             InputStream in = urlConnection.getInputStream();
